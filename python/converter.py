@@ -26,9 +26,7 @@ current_chapter = None
 
 name = "kjv"    #Change this to the name of the txt file you want to convert
 
-with open(name+".txt") as file:
-    # read through the input file, removing trailing newlines and put them all in an array
-    #lines = [l.strip() for l in file.readlines() if l.strip()]   #Removes empty spaces
+with open("raw_bible/"+name+".txt") as file:
 
     lines = file.readlines()
 
