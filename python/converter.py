@@ -53,7 +53,7 @@ with open("raw_bible/"+name+".txt") as file:
                 if current_book not in books:
                     books[current_book] = {}
                     print(f"Found book: {current_book}")
-                    book_names.remove(current_book)  # Optimization, saves 15s
+                    #book_names.remove(current_book)  # Optimization, saves 15s but seems to break it
                 current_chapter = None
                 verse_buffer = ""
                 verse_chapter = None
