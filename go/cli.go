@@ -68,11 +68,22 @@ func main() {
         fmt.Println("Error reading file:", err)
     }
 
-	var book, chapter string
-	fmt.Println("Type a verse to lookup e.g '1Kings 1:2 (exactly that format)'")
-	fmt.Scan(&book, &chapter)
 
+	var book, chapter string
 	tag := book + " " + chapter
-	p(print_verse(tag, bible))	//p to spot any errors
+	//p(print_verse(tag, bible))	//p to spot any errors
 	//p(first_words("Revelation 22:21	The grace", 2))
+
+	var param string
+	if len(os.Args) == 2 {
+		param = os.Args[1]
+		p(print_verse(param)[0])
+	} else if len(os.Args) < 2 {
+		p("Usage: vible-cli <parameter>\n")
+		p("Type a verse to lookup e.g '1Kings 1:2 (exactly that format)'")
+		return
+	} else {
+		fmt.Println("Type a verse to lookup e.g '1Kings 1:2 (exactly that format)'")
+		fmt.Scan(&book, &chapter)
+	}
 }
