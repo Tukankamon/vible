@@ -8,7 +8,7 @@ import re #Chatgpt suggested this
 import time
 import json
 
-book_names = [  #For books with more than one variant use i instead of 1, ii for 2, iii for 3 bc dictionary names are wierd
+book_names = [
     "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy",
     "Joshua", "Judges", "Ruth", "1Samuel", "2Samuel", "1Kings", "2Kings",
     "1Chronicles", "2Chronicles", "Ezra", "Nehemiah", "Esther", "Job",
@@ -27,7 +27,7 @@ books = {}
 current_book = None
 current_chapter = None
 
-name = "kjv"    #Change this to the name of the txt file you want to convert
+name = "kjv2"    #Change this to the name of the txt file you want to convert
 
 with open("raw_bible/"+name+".txt") as file:
 
