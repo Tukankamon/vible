@@ -1,3 +1,5 @@
-go/cli
-go/vible-cli
-go/main
+CLI/cli
+CLI/vible-cli
+CLI/main
+TUI/main
+CLI/result
