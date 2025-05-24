@@ -15,8 +15,8 @@
         src = pkgs.fetchFromGitHub {
           owner = "Tukankamon";
           repo = "vible";
-          rev = "main";
-          sha256 = "sha256-FW1UB1imyMFUHUP/V1HgIQzSdb/d/MfNyOKfZU96dg0=";
+          rev = "d6aa47e";    #Specific commit, if there is a "stable branch" use that
+          sha256 = "sha256-1Y/DAJpb3oP9Tc7Lm6nDJ7UVGs6IJxKZweqE3h/iuSo=";
         };
         #subPackages = [ "CLI" ];
 
