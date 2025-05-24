@@ -16,7 +16,7 @@
           owner = "Tukankamon";
           repo = "vible";
           rev = "main";    #Specific commit, will need to update the hash every update if it is a branch
-          sha256 = "sha256-1Y/sha256-pGkt/D+kQ9ebVrbjoy42oa2YwKDgCn5E+ztBly/ELKY=";
+          sha256 = "sha256-mP88atnuP0SlbxtJIgNjuh4I90Clibmhx7J3P1UMVQs=";
         };
         #subPackages = [ "CLI" ];
 
