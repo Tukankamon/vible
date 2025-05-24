@@ -7,7 +7,7 @@
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
     in {
-      packages.x86_64-linux.default = pkgs.buildGoModule {
+      packages.x86_64-linux.default = pkgs.buildGoModule rec {  #rec allows the use of ${pname}
 
         pname = "vible-cli";
         version = "1.0.0";
@@ -23,6 +23,12 @@
         #proxyVendor = true;
 
         subPackages = [ "." ];  #This skips the archive folder
+
+        nativeBuildInputs = [ pkgs.makeWrapper ];   #GPT recommendation
+        postBuild = ''
+          mkdir -p $out/share/${pname}
+          cp -r ${./bible} $out/share/${pname}/bible
+        ''; # Downloads all the text files, could make a more minimal version
       };
       devShells.x86_64-linux.default = pkgs.mkShell {
 
