@@ -1,6 +1,5 @@
 {
   description = "Bible command line tool written in go";
-  #Doesnt work just yet
 
   inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
 
@@ -17,12 +16,14 @@
           owner = "Tukankamon";
           repo = "vible";
           rev = "main";
-          sha256 = "";
+          sha256 = "sha256-srp7WEs+KLpdQgGfLlsWLJJsthr9xPSm+hwbe5VkmFw=";
         };
-        subPackages = [ "CLI" ];
+        #subPackages = [ "CLI" ];
 
-        vendorHash = null;
+        vendorHash = "sha256-srp7WEs+KLpdQgGfLlsWLJJsthr9xPSm+hwbe5VkmFw=";
         #proxyVendor = true;
+
+        subPackages = [ "." ];  #This skips the archive folder
       };
       devShells.x86_64-linux.default = pkgs.mkShell {
 
