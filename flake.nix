@@ -15,8 +15,8 @@
         src = pkgs.fetchFromGitHub {
           owner = "Tukankamon";
           repo = "vible";
-          rev = "main";    #Specific commit, will need to update the hash every update if it is a branch
-          sha256 = "sha256-mP88atnuP0SlbxtJIgNjuh4I90Clibmhx7J3P1UMVQs=";
+          rev = "c7b7c54";    #Specific commit, will need to update the hash every update if it is a branch
+          sha256 = "";
         };
         #subPackages = [ "CLI" ];
 
