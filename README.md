@@ -1,6 +1,7 @@
-# A CLI tool for Bible verse lookup and continous reading
+# A "TUI" tool for Bible verse lookup and continous reading
 
 I am not a christian myself but wanted do this to get some practice with Go and TUI's.
+![image](https://github.com/user-attachments/assets/24031af4-3b62-4281-b803-1c22064c3b51)
 
 # Installation:
 
