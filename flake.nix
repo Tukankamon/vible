@@ -16,11 +16,11 @@
           owner = "Tukankamon";
           repo = "vible";
           rev = "main";
-          sha256 = "sha256-srp7WEs+KLpdQgGfLlsWLJJsthr9xPSm+hwbe5VkmFw=";
+          sha256 = "sha256-FW1UB1imyMFUHUP/V1HgIQzSdb/d/MfNyOKfZU96dg0=";
         };
         #subPackages = [ "CLI" ];
 
-        vendorHash = "sha256-srp7WEs+KLpdQgGfLlsWLJJsthr9xPSm+hwbe5VkmFw=";
+        vendorHash = null;
         #proxyVendor = true;
 
         subPackages = [ "." ];  #This skips the archive folder
