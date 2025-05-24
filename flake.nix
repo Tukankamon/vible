@@ -27,8 +27,8 @@
         nativeBuildInputs = [ pkgs.makeWrapper ];   #GPT recommendation
         postBuild = ''
           echo "Nix build directory: $PWD"
-          mkdir -p $out/share/${pname}
-          cp -r ${./bible} $out/share/${pname}/bible
+          mkdir -p $out/bin/share/${pname}
+          cp -r ${./bible} $out/bin/share/${pname}/bible
         ''; # Downloads all the text files, could make a more minimal version
       };
       devShells.x86_64-linux.default = pkgs.mkShell {
