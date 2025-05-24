@@ -16,7 +16,7 @@
           owner = "Tukankamon";
           repo = "vible";
           rev = "main";    #Specific commit, will need to update the hash every update if it is a branch
-          sha256 = "sha256-Q3oQNWLgO5348o0mWzRNqwfpHlbqe5cxhffHAeutAbc=";
+          sha256 = "sha256-nYn6iWDKpuCt/AdGLBrtxO/92bRLFwWUnb1otZyJ0YI=";
         };
 
         vendorHash = null;
@@ -26,6 +26,7 @@
 
         nativeBuildInputs = [ pkgs.makeWrapper ];   #GPT recommendation
         postBuild = ''
+          echo "Nix build directory: $PWD"
           mkdir -p $out/share/${pname}
           cp -r ${./bible} $out/share/${pname}/bible
         ''; # Downloads all the text files, could make a more minimal version
