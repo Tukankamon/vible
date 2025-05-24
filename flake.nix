@@ -27,7 +27,7 @@
         nativeBuildInputs = [ pkgs.makeWrapper ];   #GPT recommendation
         postBuild = ''
           echo "Nix build directory: $PWD"
-          mkdir -p $out/bin/bible
+          mkdir -p $out/bin
           cp -r ${./bible} $out/bin/bible
         ''; # Downloads all the text files, could make a more minimal version
       };

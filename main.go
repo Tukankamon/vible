@@ -96,7 +96,7 @@ func main() {
 
 	bible, err := read_file("kjv_preformatted.txt")
 	if err != nil {
-		p("There has been an error", err)
+		p(err)
 		return
 	}
 
