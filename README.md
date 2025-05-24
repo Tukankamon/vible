@@ -1,4 +1,4 @@
-# A CLI tool for Bible lookup and continuos reading
+# A CLI tool for Bible lookup and continous reading
 
 I am not a christian myself but wanted do this to get some practice with Go and TUI's.
 
