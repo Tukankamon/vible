@@ -11,7 +11,7 @@ import (
 	s "strings"
 )
 
-var p = fmt.Printf	//To allow for %s formatting
+var p = fmt.Println	//Does not allow for %s
 var sc = fmt.Scanln
 
 func read_file(version string) ([]string, error){
