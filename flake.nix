@@ -7,7 +7,7 @@
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
     in {
-      packages.x86_64-linux.default = pkgs.buildGoModule rec {  #rec allows the use of ${pname}
+      packages.x86_64-linux.default = pkgs.buildGoModule {  #if you need to do something like ${} add rec
 
         pname = "vible";
         version = "1.0.0";
