@@ -22,7 +22,7 @@ func LookupView(m model) string {
 
     return centeredBar + "\n"
 }
-
+//Could join the two together
 func LookupQuoteView(m model) string {      //After the first search, for some reason the bar moves down and it is driving me crazy
     bar := searchBarStyle.Render(m.input.View())
     if m.err != nil {
@@ -61,7 +61,6 @@ func LookupUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
             m.state = home
         case tea.KeyEnter:
             m.quote, m.err = b.Search(m.input.Value())
-            m.input = ti    //clear the text
             m.state = lookupQuote
 		}
 

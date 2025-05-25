@@ -1,6 +1,7 @@
 package main
 
 import (
+    b "github.com/Tukankamon/vible/app/backend"
 
     "os"
     "fmt"
@@ -10,6 +11,7 @@ import (
     tea "github.com/charmbracelet/bubbletea"
     "github.com/charmbracelet/lipgloss"
     "github.com/charmbracelet/bubbles/textinput"
+    "github.com/charmbracelet/bubbles/viewport"       //needed for the struct, maybe I can define it in read.go
 )
 
 type (  //Dont really know what this is
@@ -50,10 +52,24 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd){
         return LookupUpdate(m, msg)
     case lookupQuote:
         return LookupUpdate(m, msg)
+    case read:
+        return ReadUpdate(m, msg)
+    case open:
+        return OpenUpdate(m, msg)
+    case opened:
+        return OpenUpdate(m, msg)
     default:
-        return homeUpdate(m, msg)
-    }
+        homeUpdate(m, msg)
+        }
+
+	switch msg := msg.(type) {  //Needed for read.go
+	case tea.WindowSizeMsg:
+		m.width = msg.Width
+		m.height = msg.Height
+	}
+    return m, nil
 }
+
 
 func (m model) View() string {
     switch m.state {
@@ -63,9 +79,16 @@ func (m model) View() string {
         return LookupView(m)
     case lookupQuote:
         return LookupQuoteView(m)
+    case read:
+        return ReadView(m)
+    case open:
+        return OpenView(m)
+    case opened:
+        return OpenView(m)
     default:
-        return homeView(m)
+        homeView(m)
     }
+    return ""
 }
 
 func homeView(m model) string {     //Default selection screen
@@ -78,13 +101,8 @@ func homeView(m model) string {     //Default selection screen
             cursor = ">"
         }
 
-        checked := " "
-        if _, ok := m.selected[i]; ok {
-            checked = "x"
-        }
-
         // This does the rendering
-        s+= fmt.Sprintf("%s [%s] %s \n\n", cursor, checked, choice)
+        s+= fmt.Sprintf("%s [ ] %s \n\n", cursor, choice)
 
     }
     tip := "\n q to Quit"
@@ -116,10 +134,15 @@ func homeUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
                     m.cursor++
                 }
 
-            case "enter", " ", "l":
+            case "enter", " ", "l", "right":
                 switch m.cursor {
                 case 0:
                     m.state = lookup
+                case 1:
+                    m.state = open
+                case 3:
+                    m.content, _ = b.Read("Genesis 1:1")
+                    m.state = read
                 default:
                     m.state = home
                 }
@@ -133,7 +156,12 @@ func homeUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func main() {
-    p := tea.NewProgram(initialModel(), tea.WithAltScreen())    //tea.WithAltScreen makes it full screen
+	p := tea.NewProgram(
+		initialModel(),
+		tea.WithAltScreen(),       // use the full size of the terminal in its "alternate screen buffer"
+		tea.WithMouseCellMotion(), // turn on mouse support so we can track the mouse wheel
+	)
+
     if _, err := p.Run(); err != nil {
         fmt.Printf("Alas, there's been an error: %v", err)
         os.Exit(1)
@@ -148,7 +176,7 @@ func initialModel() model {
 	ti.Width = 20
 
     return model{
-        choices: []string{  "Lookup", "Open chapter", "Continue reading", "Start Genesis 1:1"},
+        choices: []string{  "Lookup", "Open chapter", "Continue reading", "Start Genesis"},
         selected: make(map[int]struct{}),
         state: home,
         input: ti,
@@ -160,8 +188,14 @@ type viewState int
 
 const (
     home viewState = iota
+
     lookup
     lookupQuote
+
+    read
+
+    open
+    opened  //Chapter open but with the change of opening another
 )
 
 type model struct {
@@ -175,8 +209,12 @@ type model struct {
     width int       //For centering
     height int
 
-    input textinput.Model    //For search
+    input textinput.Model    //For search.go
     quote string    //The result of looking up a verse
+
+    content  string     //for read.go
+	ready    bool
+	viewport viewport.Model
 }
 
 /*

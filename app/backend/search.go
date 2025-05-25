@@ -6,7 +6,7 @@ import (
 	"os"
 	"fmt"
 	"bufio"
-	"flag"
+	//	"flag"
 	e "errors"
 	s "strings"
 	u "unicode"	//Right now only used for isdigit()
@@ -104,15 +104,33 @@ func get_verse(input string, slice []string) (string, error){	//consider taking 
 	return "", fmt.Errorf("ERROR, Verse '%s' not found", input)	//This allows %s formatting, e.New doesnt
 }
 
-func init() {	//Currently does nothing
-    flag.Usage = func() {
-        fmt.Fprintf(os.Stderr, "Usage: %s [options] <Book> <Chapter:Verse>\n\n", os.Args[0])
-        fmt.Fprintf(os.Stderr, "Options:\n")
-        flag.PrintDefaults()
-        fmt.Fprintf(os.Stderr, "\nExamples:\n")
-        fmt.Fprintf(os.Stderr, "  %s Genesis 1:1\n", os.Args[0])
-        //fmt.Fprintf(os.Stderr, "  %s -lang=ES John 3:16\n", os.Args[0])	//lang is not implemented
-    }
+func get_chapter(input string, bible []string) ([]string, error) {		//Needs better formatting
+	if input[1] != ' ' && u.IsDigit(rune(input[0])){	//If the user typed 1Kings instead of 1 Kings for example
+		input = input[:1] + " " + input[1:]
+	}
+	colon := s.Index(input, ":")
+	if colon > 0 {
+		input = input[:colon]
+		length := len(input)
+		if !u.IsDigit(rune(input[length-1])) {
+			return nil, e.New("Needs to at least have the book name and chapter number")
+		}
+	}
+
+
+	var chapter []string
+	for _, line := range bible {
+		colon = s.Index(line, ":")
+		var line_check string
+		if colon > 0 {
+			line_check = line[:colon]
+		}
+
+		if line_check == input {
+			chapter = append(chapter, line[colon+1:])
+		}
+	}
+	return chapter, nil
 }
 
 func Search(tag string) (string, error){	//Gets called from other files
@@ -125,10 +143,22 @@ func Search(tag string) (string, error){	//Gets called from other files
 	quote, err := get_verse(tag, bible)
 
 	if err!= nil {
-		//p(err, "\n")
-		//quote, _  := get_verse("Genesis 1:1", bible)
 		return "", err
 	}
-	get_verse("1Kings 2:3", bible)
 	return quote, nil
+}
+
+func Read(tag string) (string, error){
+	bible, err := read_file("kjv_preformatted.txt")
+	if err != nil {
+		return "", err
+	}
+
+	quote, err := get_chapter(tag, bible)
+	fmt.Print(quote)
+	text := s.Join(quote, "\n\n")
+	if err!= nil {
+		return "", err
+	}
+	return text, nil
 }

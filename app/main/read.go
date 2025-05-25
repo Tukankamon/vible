@@ -4,13 +4,15 @@ package main
 // component library.
 
 import (
+	b "github.com/Tukankamon/vible/app/backend"
+	
 	"fmt"
-	"os"
 	"strings"
 
 	"github.com/charmbracelet/bubbles/viewport"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+
 )
 
 var (
@@ -27,21 +29,16 @@ var (
 	}()
 )
 
-type model struct {
-	content  string
-	ready    bool
-	viewport viewport.Model
-}
 
-func (m model) Init() tea.Cmd {
-	return nil
-}
-
-func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func ReadUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {		//Needs a window resize to take action BUG
 	var (
 		cmd  tea.Cmd
 		cmds []tea.Cmd
 	)
+	
+	if m.input.Value() != "" {
+		m.content, _ = b.Read(m.input.Value())	//Test
+	}
 
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
@@ -50,6 +47,7 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 	case tea.WindowSizeMsg:
+
 		headerHeight := lipgloss.Height(m.headerView())
 		footerHeight := lipgloss.Height(m.footerView())
 		verticalMarginHeight := headerHeight + footerHeight
@@ -62,7 +60,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			// here.
 			m.viewport = viewport.New(msg.Width, msg.Height-verticalMarginHeight)
 			m.viewport.YPosition = headerHeight
-			m.viewport.SetContent(m.content)
+			wrapped := lipgloss.NewStyle().Width(m.viewport.Width).Render(m.content)
+			m.viewport.SetContent(wrapped)
 			m.ready = true
 		} else {
 			m.viewport.Width = msg.Width
@@ -77,7 +76,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, tea.Batch(cmds...)
 }
 
-func (m model) View() string {
+
+func ReadView(m model) string {
 	if !m.ready {
 		return "\n  Initializing..."
 	}
@@ -85,7 +85,7 @@ func (m model) View() string {
 }
 
 func (m model) headerView() string {
-	title := titleStyle.Render("Mr. Pager")
+	title := titleStyle.Render("Place Holder")	//m.input.Value()
 	line := strings.Repeat("─", max(0, m.viewport.Width-lipgloss.Width(title)))
 	return lipgloss.JoinHorizontal(lipgloss.Center, title, line)
 }
@@ -101,24 +101,4 @@ func max(a, b int) int {
 		return a
 	}
 	return b
-}
-
-func main() {
-	// Load some text for our viewport
-	content, err := os.ReadFile("artichoke.md")
-	if err != nil {
-		fmt.Println("could not load file:", err)
-		os.Exit(1)
-	}
-
-	p := tea.NewProgram(
-		model{content: string(content)},
-		tea.WithAltScreen(),       // use the full size of the terminal in its "alternate screen buffer"
-		tea.WithMouseCellMotion(), // turn on mouse support so we can track the mouse wheel
-	)
-
-	if _, err := p.Run(); err != nil {
-		fmt.Println("could not run program:", err)
-		os.Exit(1)
-	}
 }
