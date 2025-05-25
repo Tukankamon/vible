@@ -9,14 +9,14 @@
     in {
       packages.x86_64-linux.default = pkgs.buildGoModule rec {  #rec allows the use of ${pname}
 
-        pname = "vible-cli";
+        pname = "vible";
         version = "1.0.0";
 
         src = pkgs.fetchFromGitHub {
           owner = "Tukankamon";
           repo = "vible";
           rev = "main";    #Specific commit, will need to update the hash every update if it is a branch
-          sha256 = "sha256-Gyvlkc+z4TIjYwjbbXY0H2mI++myOAJv+60p3y6FjuE=";
+          sha256 = "sha256-PssycwV47kxoW5dW2L6E3MTOQmViioTy4mr6ftjuGx0=";
         };
 
         vendorHash = null;
@@ -28,8 +28,9 @@
         postBuild = ''
           echo "Nix build directory: $PWD"
           mkdir -p $out/share
-          cp -r ${./bible} $out/share/bible
+          cp -r ${./app/bible} $out/share/bible
         ''; # Downloads all the text files, could make a more minimal version
+
       };
       devShells.x86_64-linux.default = pkgs.mkShell {
 
