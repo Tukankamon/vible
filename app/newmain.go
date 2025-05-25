@@ -1,12 +1,5 @@
 package main
 
-    /*choices, err := loadChoicesFromJSON("./../bible/kjv.json")    #Use this later
-    if err != nil {
-        // fallback or exit
-        fmt.Println("Error loading choices:", err)
-        os.Exit(1)
-    }*/
-
 import (
     "os"
     "fmt"
@@ -23,7 +16,7 @@ type (  //Dont really know what this is
 )
 
 var (
-    checkboxStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))   //styling
+    checkboxStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("212"))   //unused
 
     //Box "css"     optionally use Align(lipgloss.Center)
     MenuBoxStyle = lipgloss.NewStyle().
@@ -33,6 +26,10 @@ var (
    searchBarStyle = lipgloss.NewStyle().
         Padding(0, 1).
         Border(lipgloss.RoundedBorder()).
+        Width(50)
+
+   quoteStyle = lipgloss.NewStyle().
+        Padding(0, 1).
         Width(50)
 )
 
@@ -50,10 +47,11 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd){
         return homeUpdate(m, msg)
     case lookup:
         return lookupUpdate(m, msg)
+    case lookupQuote:
+        return lookupUpdate(m, msg)
     default:
         return homeUpdate(m, msg)
     }
-    //Add a switch when there are more
 }
 
 func (m model) View() string {
@@ -62,6 +60,8 @@ func (m model) View() string {
         return homeView(m)
     case lookup:
         return lookupView(m)
+    case lookupQuote:
+        return lookupQuoteView(m)
     default:
         return homeView(m)
     }
@@ -115,7 +115,7 @@ func homeUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
                     m.cursor++
                 }
 
-            case "enter", " ":
+            case "enter", " ", "l":
                 switch m.cursor {
                 case 0:
                     m.state = lookup
@@ -132,25 +132,43 @@ func homeUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func lookupView(m model) string {
-    centeredMessage := lipgloss.NewStyle().
-        Width(m.width).
-        Align(lipgloss.Center).
-        MarginTop(50).      //Cant get this to go low enough
-        Height(3).
-        Bold(true).
-        Render("Search for quotes")
 
     bar := searchBarStyle.Render(m.input.View())
     centeredBar := lipgloss.Place(
-        m.width, m.height-4,
+        m.width, m.height,
         lipgloss.Center, lipgloss.Center,
-        bar,
+        bar+ "\n\n\n" + "Search for quotes",
     )
 
-    return centeredMessage + centeredBar + "\n"
+    return centeredBar + "\n"
+}
+
+func lookupQuoteView(m model) string {      //After the first search, for some reason the bar moves down and it is driving me crazy
+    bar := searchBarStyle.Render(m.input.View())
+    if m.err != nil {
+        centeredBar := lipgloss.Place(
+            m.width, m.height,
+            lipgloss.Center, lipgloss.Center,
+            bar + "\n\n\n" + m.err.Error(),     //Print the error
+        )
+        return centeredBar
+    } else {
+        centeredBar := lipgloss.Place(
+            m.width, m.height,
+            lipgloss.Center, lipgloss.Center,
+            bar + "\n\n\n" + m.quote,
+        )  
+        return centeredBar
+    }
 }
 
 func lookupUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
+    //To reset the input, probably are better ways to do this. Maybe set global var?
+    ti := textinput.New()
+	ti.Placeholder = "1 Kings 2:3"
+	ti.Focus()
+	ti.CharLimit = 156
+	ti.Width = 20
 	var cmd tea.Cmd
 
 	switch msg := msg.(type) {
@@ -159,10 +177,12 @@ func lookupUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
         case tea.KeyCtrlC:
 			return m, tea.Quit
         case tea.KeyEsc:    //Go back to previous menu
+            m.input = ti    //clear the text
             m.state = home
         case tea.KeyEnter:
-            Run()
-            return m, tea.Quit
+            m.quote, m.err = Lookup(m.input.Value())
+            m.input = ti    //clear the text
+            m.state = lookupQuote
 		}
 
 	// We handle errors just like any other message
@@ -214,13 +234,13 @@ func main() {
 
 func initialModel() model {
 	ti := textinput.New()
-	ti.Placeholder = "1Kings 2:3"
+	ti.Placeholder = "1 Kings 2:3"
 	ti.Focus()
 	ti.CharLimit = 156
 	ti.Width = 20
 
     return model{
-        choices: []string{  "Lookup", "Continue reading", "Start Genesis 1:1"},
+        choices: []string{  "Lookup", "Open chapter", "Continue reading", "Start Genesis 1:1"},
         selected: make(map[int]struct{}),
         state: home,
         input: ti,
@@ -233,6 +253,7 @@ type viewState int
 const (
     home viewState = iota
     lookup
+    lookupQuote
 )
 
 type model struct {
@@ -247,4 +268,5 @@ type model struct {
     height int
 
     input textinput.Model    //For search
+    quote string    //The result of looking up a verse
 }

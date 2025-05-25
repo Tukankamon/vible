@@ -1,5 +1,3 @@
-// Primitive version of the hopefully final version
-
 package main
 
 import (
@@ -9,6 +7,7 @@ import (
 	"flag"
 	e "errors"
 	s "strings"
+	u "unicode"	//Right now only used for isdigit()
 )
 
 var p = fmt.Println	//Does not allow for %s
@@ -64,24 +63,43 @@ func removeWord(sentence, word string) string {
     return s.Join(filtered, " ")
 }
 
-func print_verse(input string, slice []string) (string, error){	//consider taking book and verse as input and not the current "input", this avoids doing first_words thrice
+func get_verse(input string, slice []string) (string, error){	//consider taking book and verse as input and not the current "input", this avoids doing first_words thrice
 	if len(s.Fields(input)) > 3 {
 
 		return "", e.New("More than 3 words in the book name")
 	}
 
-	if len(s.Fields(input)) == 3 {	//Dont want to remove ALL the spaces
-		input = s.Replace(input, " ", "", 1)
+	if len(input) == 0 {
+		return "", e.New("Can't lookup an empty query")
 	}
+
 	for i, quote := range slice {
-		tag := first_words(slice[i], 2)
-		if tag == input {
-			quote = removeWord(quote, first_words(quote, 1))	//cant remove 2 at a time
-			quote = removeWord(quote, first_words(quote, 1))
-			return quote, nil
+		//Cases like 1Kings	//isdigit only counts base 10 ints, not roman numerals, fracs etc
+		switch u.IsDigit(rune(input[0])){
+		case false:
+			tag := first_words(slice[i], 2)
+			if tag == input {
+				quote = removeWord(quote, first_words(quote, 1))	//cant remove 2 at a time
+				quote = removeWord(quote, first_words(quote, 1))
+				return quote, nil
+			}
+		case true:	//Cases like 1 Kings 2:3
+			tag := first_words(slice[i], 3)
+
+			if input[1] != ' ' {	//If the user typed 1Kings instead of 1 Kings for example
+				input = input[:1] + " " + input[1:]
+			}
+
+			if tag == input {
+				quote = removeWord(quote, first_words(quote, 1))	//cant remove 2 at a time
+				quote = removeWord(quote, first_words(quote, 1))
+				quote = removeWord(quote, first_words(quote, 1))
+				return quote, nil
+			}
+
 		}
 	}
-	return "", e.New("ERROR, Verse not found")
+	return "", fmt.Errorf("ERROR, Verse '%s' not found", input)	//This allows %s formatting, e.New doesnt
 }
 
 func init() {	//Currently does nothing
@@ -95,18 +113,27 @@ func init() {	//Currently does nothing
     }
 }
 
-func Run() {
+func Lookup(tag string) (string, error){	//Gets called from other files
 	bible, err := read_file("kjv_preformatted.txt")
 	if err != nil {
-		p(err)
-		return
+		//p(err)
+		return "", err
 	}
 
-	p(bible)
+	quote, err := get_verse(tag, bible)
+
+	if err!= nil {
+		//p(err, "\n")
+		//quote, _  := get_verse("Genesis 1:1", bible)
+		return "", err
+	}
+	get_verse("1Kings 2:3", bible)
+	return quote, nil
 }
 
+/*
 func main() {
-	/*
+	
 	Run()
 	flag.Bool("read", false, "Read continuously, without other inputs will default to Genesis 1:1")
 	flag.Parse()	//Check for any optional flags, right now there arent any
@@ -119,7 +146,7 @@ func main() {
     }
 
 	tag := s.Join(args[0:2], " ")
-	quote, err := print_verse(tag, bible)
+	quote, err := get_verse(tag, bible)
 
 	if err!= nil {
 		p(err, "\n")
@@ -127,5 +154,6 @@ func main() {
 		return
 	}
 	p("\n" + quote + "\n")
-	*/
+	
 }
+	*/

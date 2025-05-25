@@ -22,7 +22,7 @@
         vendorHash = null;
         #proxyVendor = true;
 
-        subPackages = [ "." ];  #This skips the archive folder
+        subPackages = [ "./app" ];  #This skips the archive folder
 
         nativeBuildInputs = [ pkgs.makeWrapper ];   #GPT recommendation
         postBuild = ''
