@@ -21,7 +21,7 @@ func read_file(version string) ([]string, error){
     if err != nil {
 		file, err = os.Open("./../share/bible/"+version)	//In the case of nix derivations where the folders are bin and share
 		if err != nil {
-			return nil, e.New("Error opening file: ./../../bible/"+version+ "or ./../share/bible/"+version)
+			return nil, e.New("Error opening file: ./../../bible/"+version+ " or ./../share/bible/"+version)
 		}
     }
     defer file.Close()

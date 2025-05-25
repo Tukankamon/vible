@@ -1,5 +1,7 @@
 package main
 
+//Manages the front-end when looking up a verse
+
 import (
 	b "github.com/Tukankamon/vible/app/backend"
 

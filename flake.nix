@@ -1,5 +1,5 @@
 {
-  description = "Bible command line tool written in go";
+  description = "Bible command line tool written in Go";
 
   inputs.nixpkgs.url = "nixpkgs/nixos-unstable";
 
@@ -7,7 +7,7 @@
     let
       pkgs = nixpkgs.legacyPackages.x86_64-linux;
     in {
-      packages.x86_64-linux.default = pkgs.buildGoModule {  #if you need to do something like ${} add rec
+      packages.x86_64-linux.default = pkgs.buildGoModule rec {  #if you need to do something like ${} add rec
 
         pname = "vible";
         version = "1.0.0";
@@ -16,26 +16,23 @@
           owner = "Tukankamon";
           repo = "vible";
           rev = "main";    #Specific commit or branch, will need to update the hash every update if it is a branch
-          sha256 = "sha256-PssycwV47kxoW5dW2L6E3MTOQmViioTy4mr6ftjuGx0=";
+          sha256 = "sha256-g603uN0d4rRbGf95DYyIIBjL+1IvbbSwTi2d0HyXHdU=";
         };
 
-        vendorHash = "sha256-4rK69s1uTFBV20endymLw6JEUfrh51bznZEgbujUQls=";
+        buildInputs = with pkgs; [ go ];
+
+        vendorHash = "sha256-4rK69s1uTFBV20endymLw6JEUfrh51bznZEgbujUQls=";   #Couldnt find a way to do it without a vendor folder
         #proxyVendor = true;
 
-        modRoot = "."; #Cant seem to find it without this
-        subPackages = [ "app" ];  #This skips the archive folder
+        subPackages = [ "app/main" "app/backend" ];  #This skips the archive folder
 
-        #nativeBuildInputs = [ pkgs.makeWrapper ];   #GPT recommendation
         postBuild = ''
           echo "Nix build directory: $PWD"
           mkdir -p $out/share
-          cp -r ${./app/bible} $out/share/bible
+          cp -r ${./bible} $out/share/bible
         ''; # Downloads all the text files, could make a more minimal version
 
       };
-      devShells.x86_64-linux.default = pkgs.mkShell {
 
-        buildInputs = with pkgs; [ go ];
-      };
     };
 }
