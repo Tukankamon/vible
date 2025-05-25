@@ -1,4 +1,4 @@
-module github.com/Tukankamon/vible
+module github.com/Tukankamon/vible/app
 
 go 1.24.3
 
