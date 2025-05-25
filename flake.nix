@@ -15,16 +15,17 @@
         src = pkgs.fetchFromGitHub {
           owner = "Tukankamon";
           repo = "vible";
-          rev = "main";    #Specific commit, will need to update the hash every update if it is a branch
+          rev = "main";    #Specific commit or branch, will need to update the hash every update if it is a branch
           sha256 = "sha256-PssycwV47kxoW5dW2L6E3MTOQmViioTy4mr6ftjuGx0=";
         };
 
         vendorHash = null;
         #proxyVendor = true;
 
-        subPackages = [ "app" ];  #This skips the archive folder
+        modRoot = "app"; #Cant seem to find it without this
+        subPackages = [ "." ];  #This skips the archive folder
 
-        nativeBuildInputs = [ pkgs.makeWrapper ];   #GPT recommendation
+        #nativeBuildInputs = [ pkgs.makeWrapper ];   #GPT recommendation
         postBuild = ''
           echo "Nix build directory: $PWD"
           mkdir -p $out/share
