@@ -19,11 +19,11 @@
           sha256 = "sha256-PssycwV47kxoW5dW2L6E3MTOQmViioTy4mr6ftjuGx0=";
         };
 
-        vendorHash = null;
+        vendorHash = "sha256-4rK69s1uTFBV20endymLw6JEUfrh51bznZEgbujUQls=";
         #proxyVendor = true;
 
-        modRoot = "app"; #Cant seem to find it without this
-        subPackages = [ "." ];  #This skips the archive folder
+        modRoot = "."; #Cant seem to find it without this
+        subPackages = [ "app" ];  #This skips the archive folder
 
         #nativeBuildInputs = [ pkgs.makeWrapper ];   #GPT recommendation
         postBuild = ''

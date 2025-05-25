@@ -1,4 +1,6 @@
-package main
+//Code responsible for searching and returning querys like 1Kings 1:3 and returning said verse
+
+package backend
 
 import (
 	"os"
@@ -15,11 +17,11 @@ var sc = fmt.Scanln
 
 func read_file(version string) ([]string, error){
 
-	file, err := os.Open("./bible/"+version)
+	file, err := os.Open("./../../bible/"+version)
     if err != nil {
 		file, err = os.Open("./../share/bible/"+version)	//In the case of nix derivations where the folders are bin and share
 		if err != nil {
-			return nil, e.New("Error opening file: ./bible/"+version+ "or ./../share/bible/"+version)
+			return nil, e.New("Error opening file: ./../../bible/"+version+ "or ./../share/bible/"+version)
 		}
     }
     defer file.Close()
@@ -113,7 +115,7 @@ func init() {	//Currently does nothing
     }
 }
 
-func Lookup(tag string) (string, error){	//Gets called from other files
+func Search(tag string) (string, error){	//Gets called from other files
 	bible, err := read_file("kjv_preformatted.txt")
 	if err != nil {
 		//p(err)
@@ -130,30 +132,3 @@ func Lookup(tag string) (string, error){	//Gets called from other files
 	get_verse("1Kings 2:3", bible)
 	return quote, nil
 }
-
-/*
-func main() {
-	
-	Run()
-	flag.Bool("read", false, "Read continuously, without other inputs will default to Genesis 1:1")
-	flag.Parse()	//Check for any optional flags, right now there arent any
-
-    args := flag.Args()
-    if len(args) < 2 {	//error catch
-        fmt.Println("Usage: bible [flags] <Book> <Chapter:Verse>")
-        flag.PrintDefaults()
-        os.Exit(1)
-    }
-
-	tag := s.Join(args[0:2], " ")
-	quote, err := get_verse(tag, bible)
-
-	if err!= nil {
-		p(err, "\n")
-		fmt.Printf("Interpreted the input as '%s' and couldn't find it\n", tag)	//Printf and not Println
-		return
-	}
-	p("\n" + quote + "\n")
-	
-}
-	*/

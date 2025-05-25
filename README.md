@@ -21,7 +21,7 @@ I am not a christian myself but wanted do this to get some practice with Go and 
 ]
 ```
 
-## Anythin else
+## Anything else
 
 Build from source (go build / go run)
 
