@@ -33,6 +33,7 @@ func LookupView(m model) string {
     return centeredBar + "\n"
 }
 //Could join the two together
+//Longer verses like 1 Kings 2:3 mess up the layout
 func LookupQuoteView(m model) string {      //After the first search, for some reason the bar moves down and it is driving me crazy
     bar := searchBarStyle.Render(m.input.View())
     if m.err != nil {
@@ -77,7 +78,7 @@ func LookupUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
                 m.state = lookupQuote
             case open:
                 m.content, _ = b.Read(m.input.Value())
-                m.state = opened    //Having trouble detecting errors here
+                m.state = opened    //Having trouble detecting errors here, it will crash if it cannot find the chapter
             }
 		}
 
