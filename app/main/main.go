@@ -137,8 +137,10 @@ func homeUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
             case "enter", " ", "l", "right":
                 switch m.cursor {
                 case 0:
+                    m.input.Placeholder = "1 Kings 2:3"
                     m.state = lookup
                 case 1:
+                    m.input.Placeholder = "Exodus 1"      //Set it before state so it actually shows up
                     m.state = open
                 case 3:
                     m.content, _ = b.Read("Genesis 1:1")

@@ -4,7 +4,7 @@ package main
 // component library.
 
 import (
-	b "github.com/Tukankamon/vible/app/backend"
+	//b "github.com/Tukankamon/vible/app/backend"
 	
 	"fmt"
 	"strings"
@@ -36,18 +36,22 @@ func ReadUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {		//Needs a window r
 		cmds []tea.Cmd
 	)
 	
-	if m.input.Value() != "" {
-		m.content, _ = b.Read(m.input.Value())	//Test
-	}
-
 	switch msg := msg.(type) {
 	case tea.KeyMsg:
-		if k := msg.String(); k == "ctrl+c" || k == "q" || k == "esc" {
+		if k := msg.String(); k == "ctrl+c" || k == "q" {
 			return m, tea.Quit
+		}
+		if k := msg.String(); k == "esc" {
+			switch m.state {
+			case read:
+				m.state = home
+
+			case opened:	//Going back to search, might change this bind later
+				m.state = open
+			}
 		}
 
 	case tea.WindowSizeMsg:
-
 		headerHeight := lipgloss.Height(m.headerView())
 		footerHeight := lipgloss.Height(m.footerView())
 		verticalMarginHeight := headerHeight + footerHeight
@@ -85,7 +89,16 @@ func ReadView(m model) string {
 }
 
 func (m model) headerView() string {
-	title := titleStyle.Render("Place Holder")	//m.input.Value()
+	var placeholder string
+	switch m.state {
+	case read:
+		placeholder = "Genesis 1"
+	case opened:
+		placeholder = m.input.Value()
+	default:
+		placeholder = "ERR finding title"
+	}
+	title := titleStyle.Render(placeholder)	//m.input.Value()
 	line := strings.Repeat("─", max(0, m.viewport.Width-lipgloss.Width(title)))
 	return lipgloss.JoinHorizontal(lipgloss.Center, title, line)
 }
