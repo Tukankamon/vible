@@ -92,6 +92,7 @@ print(f"{end-start} seconds to parse the bible")
 
 # Save the books dictionary as JSON
 with open(name+".json", "w", encoding="utf-8") as f:
-    json.dump(books, f, ensure_ascii=False, indent=2)
+    #json.dump(books, f, ensure_ascii=False, indent=2)
+    temp = None
 
 print(f"Saved as {name+".json"}")
