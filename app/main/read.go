@@ -48,10 +48,11 @@ func ReadUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {		//Needs a window r
 
 			case opened:	//Going back to search, might change this bind later
 				m.state = open
+
 			}
 		}
 
-	case tea.WindowSizeMsg:
+	case tea.WindowSizeMsg:		//I think it needs to be copied in Update() do I can catch the message properly, could be a function
 		headerHeight := lipgloss.Height(m.headerView())
 		footerHeight := lipgloss.Height(m.footerView())
 		verticalMarginHeight := headerHeight + footerHeight
@@ -64,8 +65,7 @@ func ReadUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {		//Needs a window r
 			// here.
 			m.viewport = viewport.New(msg.Width, msg.Height-verticalMarginHeight)
 			m.viewport.YPosition = headerHeight
-			wrapped := lipgloss.NewStyle().Width(m.viewport.Width).Render(m.content)
-			m.viewport.SetContent(wrapped)
+			m.viewport.SetContent(m.content)
 			m.ready = true
 		} else {
 			m.viewport.Width = msg.Width

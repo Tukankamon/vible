@@ -44,6 +44,13 @@ func (m model) Init() tea.Cmd {
 }
 
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+
+    switch msg := msg.(type) { //Needed for read.go
+	case tea.WindowSizeMsg:
+		m.width = msg.Width
+		m.height = msg.Height
+	}
+
 	switch m.state {
 	case home:
 		return HomeUpdate(m, msg)
@@ -58,15 +65,8 @@ func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	case opened:
 		return OpenUpdate(m, msg)
 	default:
-		HomeUpdate(m, msg)
+		return HomeUpdate(m, msg)
 	}
-
-	switch msg := msg.(type) { //Needed for read.go
-	case tea.WindowSizeMsg:
-		m.width = msg.Width
-		m.height = msg.Height
-	}
-	return m, nil
 }
 
 func (m model) View() string {

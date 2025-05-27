@@ -6,7 +6,7 @@ import (
 	
 	"fmt"
 	//"strings"
-    e "errors"
+    //e "errors"
 	tea "github.com/charmbracelet/bubbletea"
 	//"github.com/charmbracelet/lipgloss"
     //"github.com/charmbracelet/bubbles/textinput"
@@ -37,7 +37,6 @@ func OpenUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
     case opened:
         return ReadUpdate(m, msg)
     default:
-        m.err = e.New("Something went wrong searching / opening the chapter")
-        return m, nil
+        return LookupUpdate(m, msg)
     }
 }

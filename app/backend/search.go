@@ -117,7 +117,6 @@ func get_chapter(input string, bible []string) ([]string, error) {		//Needs bett
 		}
 	}
 
-
 	var chapter []string
 	for _, line := range bible {
 		colon = s.Index(line, ":")

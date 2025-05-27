@@ -63,6 +63,7 @@ func HomeUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
                 case 3:
                     m.content, _ = b.Read("Genesis 1:1")
                     m.state = read
+					//return m, tea.WindowSize()		//Ugly solution to get the dimensions working, causes screen flicker
                 default:
                     m.state = home
                 }
