@@ -1,11 +1,14 @@
 #This program converts a txt version on the bible into a more readable format
-#It requires that the book names are on their own line and all their verses listed below
+#It requires that the book names are in order, on their own line and all their verses listed below
+
+
+#Please clean up this code if you can
 
 import re #Chatgpt suggested this
 import time
 import json
 
-book_names = [  #For books with more than one variant use i instead of 1, ii for 2, iii for 3 bc dictionary names are wierd
+book_names = [
     "Genesis", "Exodus", "Leviticus", "Numbers", "Deuteronomy",
     "Joshua", "Judges", "Ruth", "1Samuel", "2Samuel", "1Kings", "2Kings",
     "1Chronicles", "2Chronicles", "Ezra", "Nehemiah", "Esther", "Job",
@@ -24,7 +27,7 @@ books = {}
 current_book = None
 current_chapter = None
 
-name = "kjv"    #Change this to the name of the txt file you want to convert
+name = "kjv2"    #Change this to the name of the txt file you want to convert
 
 with open("raw_bible/"+name+".txt") as file:
 
@@ -41,40 +44,41 @@ with open("raw_bible/"+name+".txt") as file:
     verse_chapter = None
     verse_number = None
 
+    counter = 0
     for line in lines:
         line = line.strip()
         if not line:
             continue
 
         # Detect book name
-        for book in book_names:
-            if re.search(rf"\b{re.escape(book)}\b", line, re.IGNORECASE):
-                current_book = book
-                if current_book not in books:
-                    books[current_book] = {}
-                    print(f"Found book: {current_book}")
-                    book_names.remove(current_book)  # Optimization, saves 15s
-                current_chapter = None
-                verse_buffer = ""
-                verse_chapter = None
-                verse_number = None
-                break
-        else:
-            # Detect verse start
-            verse_match = verse_pattern.match(line)
-            if verse_match and current_book:
-                # Save previous verse if any
-                if verse_buffer and verse_chapter and verse_number:
-                    if verse_chapter not in books[current_book]:
-                        books[current_book][verse_chapter] = []
-                    books[current_book][verse_chapter].append(f"{verse_number} {verse_buffer.strip()}")
-                # Start new verse
-                verse_chapter = verse_match.group(1)
-                verse_number = verse_match.group(2)
-                verse_buffer = verse_match.group(3)
-            elif verse_buffer:
-                # Continuation of previous verse
-                verse_buffer += " " + line
+        if re.search(rf"\b{re.escape(book_names[counter])}\b", line, re.IGNORECASE) and line[0].isalpha():
+            current_book = book_names[counter]
+            if counter < 65:
+                counter +=1
+            if current_book not in books:
+                books[current_book] = {}
+                print(f"Found book: {current_book}")
+                #book_names.remove(current_book)  # Optimization, saves 15s but seems to break it
+            current_chapter = None
+            verse_buffer = ""
+            verse_chapter = None
+            verse_number = None
+
+        # Detect verse start
+        verse_match = verse_pattern.match(line)
+        if verse_match and current_book:
+            # Save previous verse if any
+            if verse_buffer and verse_chapter and verse_number:
+                if verse_chapter not in books[current_book]:
+                    books[current_book][verse_chapter] = []
+                books[current_book][verse_chapter].append(f"{verse_number} {verse_buffer.strip()}")
+            # Start new verse
+            verse_chapter = verse_match.group(1)
+            verse_number = verse_match.group(2)
+            verse_buffer = verse_match.group(3)
+        elif verse_buffer:
+            # Continuation of previous verse
+            verse_buffer += " " + line
 
     # Save the last verse in the file
     if verse_buffer and verse_chapter and verse_number:
