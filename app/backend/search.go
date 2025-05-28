@@ -132,8 +132,10 @@ func get_chapter(input string, bible []string) ([]string, error) {		//Needs bett
 	return chapter, nil
 }
 
+var version string = "kjv"
+
 func Search(tag string) (string, error){	//Gets called from other files
-	bible, err := read_file("kjv_preformatted.txt")
+	bible, err := read_file(version+".txt")
 	if err != nil {
 		//p(err)
 		return "", err
@@ -148,7 +150,7 @@ func Search(tag string) (string, error){	//Gets called from other files
 }
 
 func Read(tag string) (string, error){
-	bible, err := read_file("kjv_preformatted.txt")
+	bible, err := read_file(version+".txt")
 	if err != nil {
 		return "", err
 	}
