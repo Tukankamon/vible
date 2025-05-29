@@ -65,7 +65,11 @@ func ReadUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {		//Needs a window r
 			// here.
 			m.viewport = viewport.New(msg.Width, msg.Height-verticalMarginHeight)
 			m.viewport.YPosition = headerHeight
-			m.viewport.SetContent(m.content)
+			if m.err != nil {
+				m.viewport.SetContent(m.err.Error())
+			} else {
+				m.viewport.SetContent(m.content)
+			}
 			m.ready = true
 		} else {
 			m.viewport.Width = msg.Width

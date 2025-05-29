@@ -77,7 +77,7 @@ func LookupUpdate(m model, msg tea.Msg) (tea.Model, tea.Cmd) {
                 m.quote, m.err = b.Search(m.input.Value())
                 m.state = lookupQuote
             case open:
-                m.content, _ = b.Read(m.input.Value())
+                m.content, m.err = b.Read(m.input.Value())
                 m.state = opened    //Having trouble detecting errors here, it will crash if it cannot find the chapter
             }
 		}
