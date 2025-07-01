@@ -33,5 +33,5 @@ Build from source (go build / go run)
 
 # TODO:
 - [x] Interface (not just text)
-- [ ] VIM binds
+- [X] VIM binds
 - [ ] More translations/languages
